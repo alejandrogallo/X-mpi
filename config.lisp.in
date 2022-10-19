@@ -1,3 +1,4 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
+  #+quicklisp (ql:quickload :cffi)
   (pushnew #P"@VENDOR_LIB_PATH@"
            cffi:*foreign-library-directories*))
