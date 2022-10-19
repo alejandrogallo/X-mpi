@@ -41,6 +41,8 @@ pkgs.mkShell rec {
         openmpi
         llvmPackages.openmp
 
+        sbcl
+        ccl
         binutils
         gfortran
 

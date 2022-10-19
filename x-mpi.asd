@@ -5,7 +5,7 @@
   :version "0.0.1"
   :author "Alejandro Gallo <aamsgallo@gmail.com>"
   :licence "GPLv3"
-  :depends-on (#:bordeaux-threads #:cl-mpi)
+  :depends-on (#:bordeaux-threads #:cl-mpi #:cl-mpi-extensions)
   :serial t
   :components ((:file "packages")
                (:file "main")))

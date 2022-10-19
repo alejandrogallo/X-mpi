@@ -14,7 +14,7 @@ I just want an interactive mpi, is this that much to ask for?
   :version "0.0.1"
   :author "Alejandro Gallo <aamsgallo@gmail.com>"
   :licence "GPLv3"
-  :depends-on (#:bordeaux-threads #:cl-mpi)
+  :depends-on (#:bordeaux-threads #:cl-mpi #:cl-mpi-extensions)
   :serial t
   :components ((:file "packages")
                (:file "main")))
@@ -29,14 +29,32 @@ I just want an interactive mpi, is this that much to ask for?
 #+begin_src lisp :tangle main.lisp 
 (in-package :x-mpi)
 
-(defun main ()
-  (format t "hello from ~a~%"
-          (mpi:mpi-comm-rank)))
+(defparameter *mpi-root* 0)
+
+(defun run-repl ()
+  (if (eq (mpi:mpi-comm-rank) *mpi-root*)
+      (bt:make-thread #'repl)
+      (repl)))
+
+(defmacro with-mpi (code)
+  `(mpi-extensions:mpi-broadcast-anything
+    ,*mpi-root* :object ',code))
+
+(defun repl ()
+  (loop
+    (let (new-code)
+      ;; (sleep 1)
+      (mpi-extensions:mpi-broadcast-anything
+       ,*mpi-root* :object new-code)
+      (when new-code
+        (format t "received ~a in rank ~a~%"
+                new-code
+                (mpi-comm-rank))))))
 #+end_src
 
 * Build
 
-** Quicklisp
+** TODO Quicklisp
 ** The lisp script
 
 #+begin_src shell :tangle lisp.in :tangle-mode (identity #o755)

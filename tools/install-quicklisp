@@ -1,0 +1,25 @@
+#! /usr/bin/env bash
+cd `mktemp`
+curl -O https://beta.quicklisp.org/quicklisp.lisp
+
+quicklisp_folder=${1:-$HOME/quicklisp}
+
+LISPS=(sbcl
+       ecl)
+
+for lisp in ${LISPS[@]}; do
+  type -a $lisp || continue;
+  read -rd '' script <<LISP
+(progn
+  (quicklisp-quickstart:install
+   :path #P"$quicklisp_folder"))
+LISP
+
+  $lisp --no-userinit \
+      --load quicklisp.lisp \
+      --eval "$script"
+  exit $?
+done
+
+echo "no lisp found!"
+exit 1

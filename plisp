@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+tmp=`mktemp`
+cat <<EOF > $tmp
+
+(load #P"$PWD/vendor/quicklisp/setup.lisp")
+;(ql:quickload :cffi)
+;(load "x-mpi.asd")
+;(ql:quickload :cl-mpi)
+;(ql:quickload :cl-mpi-extensions)
+(load #P"$PWD/init.lisp")
+
+(in-package :x-mpi)
+(mpi:mpi-init)
+(print 'X-MPI-YEAH)
+(run-repl)
+
+EOF
+
+ccl="ccl -n -l $tmp"
+mpirun -np 1 $ccl \
+     : -np 1 $ccl -b
+
+#sbcl="sbcl --no-userinit --load $tmp"
+#$sbcl
+# mpirun -np 1 $sbcl \
+#      : -np 1 $sbcl
+#mpirun sbcl --script $tmp
