@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Copyright (C) 2022 by Alejandro Gallo <aamsgallo@gmail.com>
-cd `mktemp`
+cd "$(mktemp)" || exit 1
 curl -O https://beta.quicklisp.org/quicklisp.lisp
 
 quicklisp_folder=${1:-$HOME/quicklisp}
@@ -8,8 +8,8 @@ quicklisp_folder=${1:-$HOME/quicklisp}
 LISPS=(sbcl
        ecl)
 
-for lisp in ${LISPS[@]}; do
-  type -a $lisp || continue;
+for lisp in "${LISPS[@]}"; do
+  type -a "$lisp" || continue;
   read -rd '' script <<LISP
 (progn
   (quicklisp-quickstart:install
