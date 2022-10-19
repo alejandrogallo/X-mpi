@@ -1,0 +1,114 @@
+#+title: X-mpi
+#+author: Alejandro Gallo
+#+language: en
+#+property: header-args+ :comments noweb
+
+* Introduction
+
+I just want an interactive mpi, is this that much to ask for?
+
+#+begin_src lisp :tangle x-mpi.asd 
+(load "config.lisp")
+(asdf:defsystem "x-mpi"
+  :description "Toying with mpi stuff"
+  :version "0.0.1"
+  :author "Alejandro Gallo <aamsgallo@gmail.com>"
+  :licence "GPLv3"
+  :depends-on (#:bordeaux-threads #:cl-mpi)
+  :serial t
+  :components ((:file "packages")
+               (:file "main")))
+#+end_src
+
+
+#+begin_src lisp :tangle packages.lisp 
+(defpackage x-mpi
+  (:use :cl :cl-mpi))
+#+end_src
+
+#+begin_src lisp :tangle main.lisp 
+(in-package :x-mpi)
+
+(defun main ()
+  (format t "hello from ~a~%"
+          (mpi:mpi-comm-rank)))
+#+end_src
+
+* Build
+
+** Quicklisp
+** The lisp script
+
+#+begin_src shell :tangle lisp.in :tangle-mode (identity #o755)
+@SBCL@ --userinit @abs_top_builddir@
+#+end_src
+
+#+RESULTS:
+[[file:lisp.in]]
+
+** Configure script
+
+*** Introduction
+
+#+begin_src autoconf :tangle configure.ac 
+AC_INIT([x-mpi],[0.0.0],[https://gihtub.com/alejandrogallo/x-mpi])
+AC_CONFIG_SRCDIR([configure.ac])
+AC_PREREQ(2.69)
+AC_CONFIG_MACRO_DIRS([./etc/m4])
+AC_CONFIG_AUX_DIR([./etc/autotools])
+AM_INIT_AUTOMAKE([foreign -Wall])
+
+AC_MSG_NOTICE([
+
+              CHECKING YOUR OVERALL SYSTEM ...
+
+               ])
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+
+dnl Guess compilers
+AC_LANG([C++])
+AC_MSG_NOTICE([
+               CHECKING COMPILERS...
+               ])
+AC_PROG_CXX
+AX_MPI([], [AC_MSG_FAILURE([No MPI C++ compiler found.])])
+AX_COMPILER_VENDOR
+CXX="${MPICXX}"
+
+AM_PROG_AR
+AC_PROG_CPP           dnl sets variable CPP
+AC_PROG_RANLIB        dnl sets variable RANLIB
+AC_PROG_INSTALL       dnl sets variables INSTALL, INSTALL_DATA, INSTALL_PROGRAM
+AC_PROG_LN_S          dnl sets variable LN_S
+AC_PROG_MAKE_SET      dnl set $(MAKE) if needed
+AC_PROG_RANLIB        dnl set variable RANLIB
+AC_CHECK_TOOL([AR],[ar]) dnl set variable AR to appropriate `ar' program
+
+AC_CHECK_TOOL([SBCL],[sbcl])
+#+end_src
+
+*** export
+#+begin_src autoconf :tangle configure.ac 
+AC_ARG_VAR([VENDOR_LIB_PATH], [Path to vendor libraries like MPI])
+AC_MSG_RESULT([
+               MPILIBS=$MPILIBS
+               MPICXX = $MPICXX
+               CC = $CC
+               MPICC = $MPICC
+               ])
+
+AC_CONFIG_FILES([
+                 Makefile
+                 config.lisp
+                 lisp
+                 ])
+
+AC_OUTPUT
+#+end_src
+
+
+
+* References
+
+doi:10.1145/220346.220363

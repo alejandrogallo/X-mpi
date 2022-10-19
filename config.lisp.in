@@ -1,0 +1,3 @@
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (pushnew #P"@VENDOR_LIB_PATH@"
+           cffi:*foreign-library-directories*))

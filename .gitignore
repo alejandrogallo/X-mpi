@@ -1,0 +1,14 @@
+/Makefile
+/Makefile.in
+/aclocal.m4
+/autom4te.cache/
+/build/
+/config.lisp
+/config.status
+/configure
+/configure~
+/dists/
+/setup.lisp
+/tmp/
+/vendor/include/
+/vendor/lib/
