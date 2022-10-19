@@ -1,4 +1,5 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
+# Copyright (C) 2022 by Alejandro Gallo <aamsgallo@gmail.com>
 cd `mktemp`
 curl -O https://beta.quicklisp.org/quicklisp.lisp
 
