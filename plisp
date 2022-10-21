@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+[[ -d $PWD/vendor/quicklisp ]] ||
+  $PWD/tools/install-quicklisp $PWD/vendor/quicklisp
+
 tmp=`mktemp`
 cat <<EOF > $tmp
 
@@ -13,16 +16,18 @@ cat <<EOF > $tmp
 (in-package :x-mpi)
 (mpi:mpi-init)
 (print 'X-MPI-YEAH)
-(run-repl)
+(repl)
+(mpi:mpi-finalize)
 
 EOF
 
 ccl="ccl -n -l $tmp"
-mpirun -np 1 $ccl \
-     : -np 1 $ccl -b
+mpirun $ccl
+# mpirun -np 1 $ccl \
+#      : -np 1 $ccl -b
 
 #sbcl="sbcl --no-userinit --load $tmp"
-#$sbcl
+#mpirun $sbcl
 # mpirun -np 1 $sbcl \
 #      : -np 1 $sbcl
 #mpirun sbcl --script $tmp

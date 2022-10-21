@@ -16,10 +16,13 @@
   (loop
     (let (new-code)
       ;; (sleep 1)
-      (mpi-extensions:mpi-broadcast-anything
-       *mpi-root* :object new-code)
-      (when new-code
-        (format t "received ~a in rank ~a~%"
-                new-code
-                (mpi-comm-rank))))))
+      (when (eq (mpi:mpi-comm-rank) *mpi-root*)
+        (format t "~&mpi command: ")
+        (setq new-code (read)))
+      (setq new-code
+            (mpi-extensions:mpi-broadcast-anything
+             *mpi-root* :object new-code))
+      (format t "~&received ~a in rank ~a~%"
+              new-code
+              (mpi-comm-rank)))))
 ;; Introduction:3 ends here

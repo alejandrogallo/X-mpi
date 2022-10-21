@@ -12,3 +12,4 @@
 /tmp/
 /vendor/include/
 /vendor/lib/
+/vendor/quicklisp/
